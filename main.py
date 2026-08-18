@@ -3,9 +3,12 @@ import pygame
 
 GAME_WIDTH, GAME_HEIGHT = 800, 600
 screen = pygame.display.set_mode((GAME_WIDTH, GAME_HEIGHT))
-SPEED = 5
+#Paddle Variables
+PADDLE_SPEED = 5
 PADDLE_WIDTH, PADDLE_HEIGHT = 20, 90
+#Ball variables
 BALL_WIDTH, BALL_HEIGHT = 20, 20
+BALL_SPEED_X, BALL_SPEED_Y = 5, 5
 
 
 #Rectangles
@@ -38,15 +41,36 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit()
             exit()
-    # For Bouncing the ball around the screen(for now it ignores the paddles and phases through them)
-    
+    #Constantly moves the ball throught the screen
+    ball.x += BALL_SPEED_X
+    ball.y += BALL_SPEED_Y
+
+    #Bounce off the left wall
+    if ball.x <= 0:
+        ball.x = 0
+        BALL_SPEED_X = abs(BALL_SPEED_X)  # Move right
+
+    # Bounce off the right wall
+    elif ball.x >= GAME_WIDTH - 20:
+        ball.x = GAME_WIDTH - 20
+        BALL_SPEED_X = -abs(BALL_SPEED_X)  # Move left
+
+    #Bounce off the top wall
+    if ball.y <= 0:
+        ball.y = 0
+        BALL_SPEED_Y = abs(BALL_SPEED_Y) # Move down
+
+    #Bounce off the down wall
+    elif ball.y > GAME_HEIGHT - 20:
+        ball.y = GAME_HEIGHT - 20
+        BALL_SPEED_Y = -abs(BALL_SPEED_Y) # Move up
 
     #Getting user inputs for changing the state of the ball(From normal bounce mode to fast bounce mode) for now i will just change the color when a key is pressed
     keys = pygame.key.get_pressed()
     if (keys[pygame.K_UP] or keys[pygame.K_w]):
-        player_paddle.y -= SPEED
+        player_paddle.y -= PADDLE_SPEED
     elif (keys[pygame.K_DOWN] or keys[pygame.K_s]):
-        player_paddle.y += SPEED
+        player_paddle.y += PADDLE_SPEED
 
     #Checking for boundaries(UP)
     if player_paddle.y < 0:
@@ -55,7 +79,7 @@ while True:
     if player_paddle.y > GAME_HEIGHT - PADDLE_HEIGHT:
         player_paddle.y = GAME_HEIGHT - PADDLE_HEIGHT
 
-    #
+    
 
     draw()
     pygame.display.update()
